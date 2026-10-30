@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { applyTheme, suppressTransitions } from "../src/dom";
 
 const doubleRaf = () =>
@@ -25,16 +25,16 @@ describe("applyTheme", () => {
 
 	it("sets color-scheme when enabled", () => {
 		applyTheme("dark", { attribute: "class", enableColorScheme: true });
-		expect(document.documentElement.style.getPropertyValue("color-scheme")).toBe(
-			"dark",
-		);
+		expect(
+			document.documentElement.style.getPropertyValue("color-scheme"),
+		).toBe("dark");
 	});
 
 	it("leaves color-scheme untouched when disabled", () => {
 		applyTheme("dark", { attribute: "class", enableColorScheme: false });
-		expect(document.documentElement.style.getPropertyValue("color-scheme")).toBe(
-			"",
-		);
+		expect(
+			document.documentElement.style.getPropertyValue("color-scheme"),
+		).toBe("");
 	});
 });
 

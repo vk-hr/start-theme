@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 import { buildThemeScript } from "../src/script";
 
 describe("buildThemeScript", () => {
@@ -10,9 +10,11 @@ describe("buildThemeScript", () => {
 
 	it("wraps the body in an IIFE invoked with serialized params", () => {
 		const script = buildThemeScript({ theme: "dark", ...base });
-		expect(script.startsWith("(function(theme, attribute, colorScheme, disableTransitions){")).toBe(
-			true,
-		);
+		expect(
+			script.startsWith(
+				"(function(theme, attribute, colorScheme, disableTransitions){",
+			),
+		).toBe(true);
 		expect(script.endsWith('["dark","class",true,false])')).toBe(true);
 	});
 

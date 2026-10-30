@@ -1,28 +1,33 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 import {
-	ThemeProvider,
-	useTheme,
-	type ThemeProviderProps,
-	type UseThemeReturn,
-} from "../src/provider";
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from "@testing-library/react";
+import type { ThemeProviderProps, UseThemeReturn } from "../src/provider";
 import { emitSystemChange, setSystemPrefersDark } from "./setup";
 
-const invalidateRef = { current: vi.fn() };
+const invalidateRef = { current: mock(() => {}) };
 
-beforeEach(() => {
-	invalidateRef.current.mockReset();
-});
-
-vi.mock("@tanstack/react-router", () => ({
+mock.module("@tanstack/react-router", () => ({
+	// biome-ignore lint/correctness/noComponentHookFactories: test stub for the SSR-only script component
 	ScriptOnce: () => null,
 	useRouter: () => ({ invalidate: invalidateRef.current }),
 }));
+
+const { ThemeProvider, useTheme } = await import("../src/provider");
+
+beforeEach(() => {
+	invalidateRef.current.mockClear();
+});
 
 function renderTheme(props: ThemeProviderProps): {
 	values: UseThemeReturn[];
 } {
 	const values: UseThemeReturn[] = [];
+	// biome-ignore lint/correctness/noComponentHookFactories: test probe component reads the context under render()
 	function Probe() {
 		const value = useTheme();
 		values.push(value);
@@ -57,7 +62,7 @@ describe("ThemeProvider", () => {
 	});
 
 	it("persists via setThemeFn and invalidates loaders by default", async () => {
-		const setThemeFn = vi.fn(async () => {});
+		const setThemeFn = mock(async () => {});
 		renderTheme({ theme: "system", setThemeFn });
 		fireEvent.click(screen.getByRole("button"));
 		expect(document.documentElement.classList.contains("dark")).toBe(true);
@@ -66,7 +71,7 @@ describe("ThemeProvider", () => {
 	});
 
 	it("skips invalidation when invalidate is false", async () => {
-		const setThemeFn = vi.fn(async () => {});
+		const setThemeFn = mock(async () => {});
 		renderTheme({ theme: "system", setThemeFn, invalidate: false });
 		fireEvent.click(screen.getByRole("button"));
 		await waitFor(() => expect(setThemeFn).toHaveBeenCalled());

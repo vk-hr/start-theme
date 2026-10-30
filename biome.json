@@ -1,7 +1,13 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.7/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.6.4/schema.json",
 	"files": {
-		"includes": ["src/**/*", "test/**/*", "*.config.ts", "**/*.json", "!dist/**/*"]
+		"includes": [
+			"src/**/*",
+			"test/**/*",
+			"*.config.ts",
+			"**/*.json",
+			"!dist/**/*"
+		]
 	},
 	"formatter": {
 		"enabled": true,
@@ -11,7 +17,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"style": {
 				"noInferrableTypes": "error",
 				"noParameterAssign": "error",

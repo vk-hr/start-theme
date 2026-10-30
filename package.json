@@ -2,26 +2,29 @@
 	"name": "start-theme",
 	"version": "0.1.0",
 	"description": "SSR-driven theming for TanStack Start. The theme lives in a cookie, so the server always knows it — no flash of the wrong theme, no hydration warnings.",
+	"keywords": [
+		"cookie",
+		"dark-mode",
+		"react",
+		"ssr",
+		"tanstack",
+		"tanstack-start",
+		"theme",
+		"theming"
+	],
+	"bugs": {
+		"url": "https://github.com/vk-hr/start-theme/issues"
+	},
 	"license": "MIT",
-	"type": "module",
-	"author": "0Empty0 <garg.victor11@gmail.com>",
+	"author": "vk-hr <viktor.harhatt@gmail.com>",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/vk-hr/start-theme.git"
 	},
-	"bugs": {
-		"url": "https://github.com/vk-hr/start-theme/issues"
-	},
-	"keywords": [
-		"tanstack",
-		"tanstack-start",
-		"theme",
-		"theming",
-		"dark-mode",
-		"ssr",
-		"cookie",
-		"react"
+	"files": [
+		"dist"
 	],
+	"type": "module",
 	"sideEffects": false,
 	"exports": {
 		".": {
@@ -33,19 +36,15 @@
 			"import": "./dist/server.js"
 		}
 	},
-	"files": ["dist"],
 	"scripts": {
-		"build": "tsdown",
-		"test": "vitest run",
+		"build": "bun run build:js && bun run build:types",
+		"build:js": "NODE_ENV=production bun build src/index.ts src/server.ts --outdir dist --clean --format esm --target browser --splitting --sourcemap --external react --external react/jsx-runtime --external @tanstack/react-router --external @tanstack/react-start --external @tanstack/react-start/server",
+		"build:types": "tsc -p tsconfig.build.json",
+		"test": "bun test",
 		"typecheck": "tsc --noEmit",
 		"check": "biome check",
 		"format": "biome check --write",
-		"prepublishOnly": "bun run typecheck && bun run check && bun run test && bun run build"
-	},
-	"peerDependencies": {
-		"@tanstack/react-router": "^1.166.0",
-		"@tanstack/react-start": "^1.166.0",
-		"react": "^19.0.0"
+		"prepublishOnly": "bun run typecheck && bun run check && bun test && bun run build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.7",
@@ -53,15 +52,18 @@
 		"@tanstack/react-start": "^1.169.4",
 		"@testing-library/dom": "^10.4.1",
 		"@testing-library/react": "^16.3.2",
-		"@types/node": "^25.5.0",
+		"@types/bun": "latest",
+		"@types/jsdom": "^30.0.0",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
-		"@vitejs/plugin-react": "^6.0.1",
 		"jsdom": "^29.0.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
-		"tsdown": "^0.23.4",
-		"typescript": "^5.9.3",
-		"vitest": "^4.1.0"
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"@tanstack/react-router": "^1.166.0",
+		"@tanstack/react-start": "^1.166.0",
+		"react": "^19.0.0"
 	}
 }

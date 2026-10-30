@@ -1,10 +1,6 @@
 import { ScriptOnce, useRouter } from "@tanstack/react-router";
 import * as React from "react";
-import {
-	applyTheme,
-	suppressTransitions,
-	type ThemeAttribute,
-} from "./dom";
+import { applyTheme, suppressTransitions, type ThemeAttribute } from "./dom";
 import { buildThemeScript } from "./script";
 import { isTheme, type ResolvedTheme, type Theme } from "./types";
 
@@ -51,9 +47,10 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
 	const router = useRouter();
 	const [theme, setThemeState] = React.useState<Theme>(initialTheme);
-	const [resolvedTheme, setResolvedTheme] = React.useState<ResolvedTheme | null>(
-		initialTheme === "system" ? null : initialTheme,
-	);
+	const [resolvedTheme, setResolvedTheme] =
+		React.useState<ResolvedTheme | null>(
+			initialTheme === "system" ? null : initialTheme,
+		);
 	const [systemTheme, setSystemTheme] = React.useState<ResolvedTheme | null>(
 		null,
 	);
@@ -99,9 +96,7 @@ export function ThemeProvider({
 		if (disableTransitionOnChange) {
 			suppressTransitions();
 		}
-		const system = window.matchMedia(
-			"(prefers-color-scheme: dark)",
-		).matches
+		const system = window.matchMedia("(prefers-color-scheme: dark)").matches
 			? "dark"
 			: "light";
 		const resolved = next === "system" ? system : next;
@@ -123,9 +118,7 @@ export function ThemeProvider({
 	}
 
 	return (
-		<ThemeContext
-			value={{ theme, setTheme, resolvedTheme, systemTheme }}
-		>
+		<ThemeContext value={{ theme, setTheme, resolvedTheme, systemTheme }}>
 			<ScriptOnce>
 				{buildThemeScript({
 					theme: initialTheme,

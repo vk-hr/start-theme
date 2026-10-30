@@ -5,9 +5,9 @@ export {
 } from "./dom";
 export {
 	ThemeProvider,
-	useTheme,
 	type ThemeProviderProps,
 	type UseThemeReturn,
+	useTheme,
 } from "./provider";
 export { buildThemeScript, type ThemeScriptOptions } from "./script";
-export { isTheme, themes, type ResolvedTheme, type Theme } from "./types";
+export { isTheme, type ResolvedTheme, type Theme, themes } from "./types";

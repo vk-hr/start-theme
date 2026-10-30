@@ -4,14 +4,20 @@
 
 ```bash
 bun install
-bun run test       # vitest run
-bun run build      # tsdown -> dist/
+bun test           # bun test + jsdom globals via bunfig.toml preload
+bun run build      # bun build (ESM) + tsc for .d.ts
 bun run typecheck  # tsc --noEmit
 bun run check      # biome check
 bun run format     # biome check --write
 ```
 
-Always use `bun` — never npm/yarn/pnpm.
+All tooling is bun-native: `bun build` for JS, `tsc --emitDeclarationOnly`
+for declarations (bun does not emit types), `bun test` with jsdom globals
+registered in `test/setup.ts` (a bunfig preload). Always use `bun` — never
+npm/yarn/pnpm.
+
+When adding a peer dependency, extend the `--external` list in the
+`build:js` script, or bun build will inline it into dist.
 
 ## Architecture
 

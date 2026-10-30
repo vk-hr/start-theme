@@ -1,5 +1,5 @@
 import { getCookie, setCookie } from "@tanstack/react-start/server";
-import { isTheme, themes, type Theme } from "./types";
+import { isTheme, type Theme, themes } from "./types";
 
 const YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
@@ -56,7 +56,10 @@ export function createThemeCookie(
 		path: options.path ?? "/",
 		maxAge: options.maxAge ?? YEAR_IN_SECONDS,
 		sameSite: options.sameSite ?? "lax",
-		secure: options.secure ?? process.env.NODE_ENV === "production",
+		// globalThis escapes bundler defines like process.env.NODE_ENV -> "production",
+		// so the default stays dynamic at runtime.
+		secure:
+			options.secure ?? globalThis.process?.env?.NODE_ENV === "production",
 		...(options.domain ? { domain: options.domain } : {}),
 	};
 
@@ -81,4 +84,4 @@ export function createThemeCookie(
 	};
 }
 
-export { isTheme, themes, type ResolvedTheme, type Theme } from "./types";
+export { isTheme, type ResolvedTheme, type Theme, themes } from "./types";

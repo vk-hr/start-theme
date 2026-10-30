@@ -1,43 +1,40 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, mock } from "bun:test";
 
-vi.mock("@tanstack/react-start/server", () => ({
-	getCookie: vi.fn(),
-	setCookie: vi.fn(),
+const getCookieMock = mock<() => string | undefined>(() => undefined);
+const setCookieMock = mock(() => {});
+
+mock.module("@tanstack/react-start/server", () => ({
+	getCookie: getCookieMock,
+	setCookie: setCookieMock,
 }));
 
-import { getCookie, setCookie } from "@tanstack/react-start/server";
-import { createThemeCookie } from "../src/server";
-
-const getCookieMock = vi.mocked(getCookie);
-const setCookieMock = vi.mocked(setCookie);
+const { createThemeCookie } = await import("../src/server");
 
 describe("createThemeCookie", () => {
 	beforeEach(() => {
-		getCookieMock.mockReset();
-		setCookieMock.mockReset();
+		getCookieMock.mockClear();
+		setCookieMock.mockClear();
 	});
 
 	describe("read", () => {
 		it("falls back to the default theme when the cookie is missing", () => {
-			getCookieMock.mockReturnValue(undefined);
+			getCookieMock.mockImplementation(() => undefined);
 			expect(createThemeCookie().read()).toBe("system");
 		});
 
 		it("falls back to the default theme on an invalid value", () => {
-			getCookieMock.mockReturnValue("blue");
+			getCookieMock.mockImplementation(() => "blue");
 			expect(createThemeCookie().read()).toBe("system");
 		});
 
 		it("returns the cookie value when valid", () => {
-			getCookieMock.mockReturnValue("dark");
+			getCookieMock.mockImplementation(() => "dark");
 			expect(createThemeCookie().read()).toBe("dark");
 		});
 
 		it("uses the configured default theme", () => {
-			getCookieMock.mockReturnValue(undefined);
-			expect(createThemeCookie({ defaultTheme: "light" }).read()).toBe(
-				"light",
-			);
+			getCookieMock.mockImplementation(() => undefined);
+			expect(createThemeCookie({ defaultTheme: "light" }).read()).toBe("light");
 		});
 	});
 
@@ -60,17 +57,13 @@ describe("createThemeCookie", () => {
 				secure: true,
 				domain: "example.com",
 			}).write("light");
-			expect(setCookieMock).toHaveBeenCalledWith(
-				"_preferred-theme",
-				"light",
-				{
-					path: "/",
-					maxAge: 60,
-					sameSite: "strict",
-					secure: true,
-					domain: "example.com",
-				},
-			);
+			expect(setCookieMock).toHaveBeenCalledWith("_preferred-theme", "light", {
+				path: "/",
+				maxAge: 60,
+				sameSite: "strict",
+				secure: true,
+				domain: "example.com",
+			});
 		});
 	});
 
@@ -82,7 +75,9 @@ describe("createThemeCookie", () => {
 		it("throws on invalid input", () => {
 			expect(() => createThemeCookie().validate("blue")).toThrow(TypeError);
 			expect(() => createThemeCookie().validate(42)).toThrow(/Expected one of/);
-			expect(() => createThemeCookie().validate(undefined)).toThrow(/Invalid theme/);
+			expect(() => createThemeCookie().validate(undefined)).toThrow(
+				/Invalid theme/,
+			);
 		});
 	});
 
