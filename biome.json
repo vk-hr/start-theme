@@ -6,7 +6,8 @@
 			"test/**/*",
 			"*.config.ts",
 			"**/*.json",
-			"!dist/**/*"
+			"!dist/**/*",
+			"!package.json"
 		]
 	},
 	"formatter": {
