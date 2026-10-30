@@ -1,5 +1,12 @@
 # start-theme
 
+[![npm version](https://img.shields.io/npm/v/start-theme.svg)](https://www.npmjs.com/package/start-theme)
+[![npm downloads](https://img.shields.io/npm/dm/start-theme.svg)](https://www.npmjs.com/package/start-theme)
+[![bundle size](https://img.shields.io/bundlephobia/minzip/start-theme)](https://bundlephobia.com/package/start-theme)
+[![CI](https://github.com/vk-hr/start-theme/actions/workflows/ci.yml/badge.svg)](https://github.com/vk-hr/start-theme/actions/workflows/ci.yml)
+[![provenance](https://shields.io/badge/published%20with-provenance-11B7A5?logo=npm)](https://docs.npmjs.com/generating-provenance-statements)
+[![License: MIT](https://img.shields.io/npm/l/start-theme.svg)](./LICENSE)
+
 SSR-driven theming for [TanStack Start](https://tanstack.com/start). The theme
 lives in a **cookie**, so the server always knows it.
 
