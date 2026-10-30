@@ -1,0 +1,67 @@
+{
+	"name": "start-theme",
+	"version": "0.1.0",
+	"description": "SSR-driven theming for TanStack Start. The theme lives in a cookie, so the server always knows it — no flash of the wrong theme, no hydration warnings.",
+	"license": "MIT",
+	"type": "module",
+	"author": "0Empty0 <garg.victor11@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/vk-hr/start-theme.git"
+	},
+	"bugs": {
+		"url": "https://github.com/vk-hr/start-theme/issues"
+	},
+	"keywords": [
+		"tanstack",
+		"tanstack-start",
+		"theme",
+		"theming",
+		"dark-mode",
+		"ssr",
+		"cookie",
+		"react"
+	],
+	"sideEffects": false,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./server": {
+			"types": "./dist/server.d.ts",
+			"import": "./dist/server.js"
+		}
+	},
+	"files": ["dist"],
+	"scripts": {
+		"build": "tsdown",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"check": "biome check",
+		"format": "biome check --write",
+		"prepublishOnly": "bun run typecheck && bun run check && bun run test && bun run build"
+	},
+	"peerDependencies": {
+		"@tanstack/react-router": "^1.166.0",
+		"@tanstack/react-start": "^1.166.0",
+		"react": "^19.0.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.7",
+		"@tanstack/react-router": "^1.170.46",
+		"@tanstack/react-start": "^1.169.4",
+		"@testing-library/dom": "^10.4.1",
+		"@testing-library/react": "^16.3.2",
+		"@types/node": "^25.5.0",
+		"@types/react": "^19.3.0",
+		"@types/react-dom": "^19.3.0",
+		"@vitejs/plugin-react": "^6.0.1",
+		"jsdom": "^29.0.0",
+		"react": "^19.2.4",
+		"react-dom": "^19.2.4",
+		"tsdown": "^0.23.4",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.0"
+	}
+}
