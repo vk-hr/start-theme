@@ -4,11 +4,16 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 0.1.2 (leading v is stripped)"
+        required: true
+        type: string
 
 # OIDC for npm trusted publishing. Provenance attestations are generated
 # automatically when publishing through the trusted publisher.
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 concurrency:
@@ -37,10 +42,39 @@ jobs:
       - name: Upgrade npm
         run: npm install -g npm@latest
 
+      - name: Determine version
+        id: version
+        env:
+          DISPATCH_VERSION: ${{ inputs.version }}
+        run: |
+          if [ -n "$DISPATCH_VERSION" ]; then
+            VERSION="${DISPATCH_VERSION#v}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # Dispatch path: bump, commit to main, push the tag. GITHUB_TOKEN-driven
+      # pushes do not re-trigger workflows, so publishing happens in this run.
+      - name: Bump version and push release commit
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          npm version "$VERSION" --no-git-tag-version
+          git add package.json
+          git commit -m "chore: release v$VERSION"
+          git push origin HEAD:main
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Verify tag matches package version
+        if: github.event_name == 'push'
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"
           PACKAGE_VERSION="$(bun -e 'console.log(require("./package.json").version)')"
@@ -53,3 +87,10 @@ jobs:
       # bun build. Authenticates via OIDC trusted publishing — no token.
       - name: Publish to npm
         run: npm publish
+
+      - name: Create GitHub release
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: gh release create "v$VERSION" --title "v$VERSION" --generate-notes

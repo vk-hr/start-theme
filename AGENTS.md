@@ -16,11 +16,16 @@ for declarations (bun does not emit types), `bun test` with jsdom globals
 registered in `test/setup.ts` (a bunfig preload). Always use `bun` — never
 npm/yarn/pnpm.
 
-**Releases**: push a tag `v*` matching package.json's version —
-`.github/workflows/publish.yml` publishes via npm trusted publishing (OIDC).
-The upload uses the npm CLI (not `bun publish`, which lacks OIDC support);
-the trusted publisher configured on npmjs.com must name this exact workflow
-filename and the `npm publish` allowed action.
+**Releases**: two equivalent paths —
+1. push a tag `v*` matching package.json's version, or
+2. `gh workflow run publish.yml -f version=X.Y.Z` (or Actions → Publish →
+   Run workflow), which bumps package.json, commits, tags, publishes, and
+   creates the GitHub release.
+
+Publishing goes through npm trusted publishing (OIDC). The upload uses the
+npm CLI (not `bun publish`, which lacks OIDC support); the trusted publisher
+configured on npmjs.com must name this exact workflow filename and the
+`npm publish` allowed action.
 
 When adding a peer dependency, extend the `--external` list in the
 `build:js` script, or bun build will inline it into dist.
