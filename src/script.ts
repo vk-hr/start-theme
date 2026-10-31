@@ -39,5 +39,5 @@ root.classList.add(resolved);
 root.setAttribute("data-theme", resolved);
 }
 if (colorScheme) { root.style.setProperty("color-scheme", resolved); }
-})(${params})`;
+})(...${params})`;
 }

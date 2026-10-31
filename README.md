@@ -80,6 +80,11 @@ function RootComponent() {
 
 **3. Switch it anywhere:**
 
+> **Note:** add `suppressHydrationWarning` to your root `<html>` element. The
+> bootstrap script intentionally applies the theme class and `color-scheme`
+> before React hydrates, and React would otherwise warn that those attributes
+> differ from the server-rendered markup.
+
 ```tsx
 import { useTheme } from "start-theme";
 

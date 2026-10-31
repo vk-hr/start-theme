@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+
 import { buildThemeScript } from "../src/script";
 
 describe("buildThemeScript", () => {
@@ -15,7 +16,7 @@ describe("buildThemeScript", () => {
 				"(function(theme, attribute, colorScheme, disableTransitions){",
 			),
 		).toBe(true);
-		expect(script.endsWith('["dark","class",true,false])')).toBe(true);
+		expect(script.endsWith('...["dark","class",true,false])')).toBe(true);
 	});
 
 	it("resolves system themes via matchMedia", () => {
@@ -47,5 +48,25 @@ describe("buildThemeScript", () => {
 		});
 		expect(script).toContain('style.setProperty("color-scheme"');
 		expect(script).toContain("transition:none!important");
+	});
+
+	it("applies the resolved class and color-scheme when executed", () => {
+		const script = buildThemeScript({ theme: "system", ...base });
+		new Function(script)();
+		expect(document.documentElement.classList.contains("light")).toBe(true);
+		expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+		expect(
+			document.documentElement.style.getPropertyValue("color-scheme"),
+		).toBe("light");
+	});
+
+	it("applies data-theme when executed with attribute data-theme", () => {
+		const script = buildThemeScript({
+			theme: "dark",
+			...base,
+			attribute: "data-theme",
+		});
+		new Function(script)();
+		expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
 	});
 });

@@ -1,6 +1,6 @@
 {
   "name": "start-theme",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "SSR-driven theming for TanStack Start. The theme lives in a cookie, so the server always knows it — no flash of the wrong theme, no hydration warnings.",
   "keywords": [
     "cookie",
